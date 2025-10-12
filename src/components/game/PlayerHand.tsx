@@ -36,12 +36,12 @@ export default function PlayerHand() {
   }
 
   const numCards = cards.length;
-  const arc = 100;
-  const radius = 25 * numCards;
-  const anglePerCard = numCards > 1 ? arc / (numCards - 1) : 0;
+  const arc = 120; // The total angle of the fan
+  const radius = 15 * numCards; // The radius of the fan's arc
 
   return (
-    <div className="absolute bottom-[-100px] sm:bottom-[-120px] left-1/2 -translate-x-1/2 w-[600px] h-[300px] sm:w-[800px] sm:h-[400px] pointer-events-auto">
+    // 1. Adjusted container position to be flush with the bottom
+    <div className="absolute bottom-[-60px] sm:bottom-[-80px] left-1/2 -translate-x-1/2 w-[600px] h-[300px] sm:w-[800px] sm:h-[400px] pointer-events-auto">
         <Reorder.Group
             axis="x"
             values={cards}
@@ -52,7 +52,8 @@ export default function PlayerHand() {
             className="relative w-full h-full"
         >
         <AnimatePresence>
-          {gamePhase !== 'loading' && gamePhase !== 'initial-deal' && cards.map((card, index) => {
+          {gamePhase !== 'loading' && cards.map((card, index) => {
+            const anglePerCard = numCards > 1 ? arc / (numCards - 1) : 0;
             const cardAngle = (index - (numCards - 1) / 2) * anglePerCard;
             return (
                 <Reorder.Item
@@ -67,14 +68,13 @@ export default function PlayerHand() {
                     initial={ gamePhase === 'dealing-cards' ? { opacity: 0, y: -200, rotate: 0 } : false }
                     animate={{
                         opacity: 1,
-                        rotate: cardAngle,
-                        y: 0,
+                        // 2. Uses the smaller radius for a more compact fan
                         transform: `rotate(${cardAngle}deg) translateY(-${radius}px)`,
                         transition: { type: 'spring', stiffness: 300, damping: 30, delay: gamePhase === 'dealing-cards' ? index * 0.1 : 0 },
                     }}
                     whileHover={{
-                        scale: 1.1,
-                        y: -20,
+                        // 3. Refined hover effect to match the new radius
+                        transform: `rotate(${cardAngle}deg) translateY(-${radius + 40}px) scale(1.1)`,
                         zIndex: 50,
                         transition: { type: 'spring', stiffness: 300, damping: 20 },
                     }}
