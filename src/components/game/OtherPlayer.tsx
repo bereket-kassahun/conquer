@@ -2,7 +2,7 @@
 
 import type { OtherPlayer } from '@/lib/types';
 import PlayerAvatar from './PlayerAvatar';
-import { CardIcon, User } from 'lucide-react';
+import { RectangleVertical, User } from 'lucide-react';
 
 interface OtherPlayerProps {
   player: OtherPlayer;
@@ -18,7 +18,7 @@ export default function OtherPlayerComponent({ player, position }: OtherPlayerPr
         {player.fullName}
       </div>
       <div className="flex items-center space-x-2 bg-black/50 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
-        <CardIcon className="w-4 h-4" />
+        <RectangleVertical className="w-4 h-4" />
         <span>{player.cardCount}</span>
       </div>
     </div>

@@ -1,13 +1,14 @@
 'use client';
 import { useGameStore } from '@/hooks/use-game-store';
 import CardComponent from './CardComponent';
-import { AnimatePresence, motion, Reorder } from 'framer-motion';
+import { AnimatePresence, Reorder } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import type { Card } from '@/lib/types';
 
 export default function PlayerHand() {
   const { player, setPlayerCards, gamePhase, finishDealingAnimation, discardCard, drawnCard, turn } = useGameStore();
-  const [cards, setCards] = useState(player?.cards ?? []);
+  const [cards, setCards] = useState<Card[]>(player?.cards ?? []);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -36,7 +37,7 @@ export default function PlayerHand() {
 
   const numCards = cards.length;
   const arc = 100;
-  const radius = 30 * numCards;
+  const radius = 25 * numCards;
   const anglePerCard = numCards > 1 ? arc / (numCards - 1) : 0;
 
   return (
@@ -54,30 +55,33 @@ export default function PlayerHand() {
           {gamePhase !== 'loading' && gamePhase !== 'initial-deal' && cards.map((card, index) => {
             const cardAngle = (index - (numCards - 1) / 2) * anglePerCard;
             return (
-              <motion.div
-                key={card.id}
-                onClick={() => onCardClick(card)}
-                className="absolute left-1/2 -translate-x-1/2 bottom-0"
-                style={{
-                  transformOrigin: 'bottom center',
-                }}
-                initial={ gamePhase === 'dealing-cards' ? { opacity: 0, y: -200, rotate: 0 } : false }
-                animate={{
-                    opacity: 1,
-                    rotate: cardAngle,
-                    y: 0,
-                    transform: `rotate(${cardAngle}deg) translateY(-${radius}px)`,
-                    transition: { type: 'spring', stiffness: 300, damping: 30, delay: gamePhase === 'dealing-cards' ? index * 0.1 : 0 },
-                }}
-                whileHover={{
-                    scale: 1.1,
-                    y: -20,
-                    zIndex: 50,
-                    transition: { type: 'spring', stiffness: 300, damping: 20 },
-                }}
-              >
-                  <CardComponent card={card} isFaceUp={true} />
-              </motion.div>
+                <Reorder.Item
+                    key={card.id}
+                    value={card}
+                    id={card.id}
+                    onTap={() => onCardClick(card)}
+                    className="absolute left-1/2 -translate-x-1/2 bottom-0"
+                    style={{
+                        transformOrigin: 'bottom center',
+                    }}
+                    initial={ gamePhase === 'dealing-cards' ? { opacity: 0, y: -200, rotate: 0 } : false }
+                    animate={{
+                        opacity: 1,
+                        rotate: cardAngle,
+                        y: 0,
+                        transform: `rotate(${cardAngle}deg) translateY(-${radius}px)`,
+                        transition: { type: 'spring', stiffness: 300, damping: 30, delay: gamePhase === 'dealing-cards' ? index * 0.1 : 0 },
+                    }}
+                    whileHover={{
+                        scale: 1.1,
+                        y: -20,
+                        zIndex: 50,
+                        transition: { type: 'spring', stiffness: 300, damping: 20 },
+                    }}
+                    dragListener={true}
+                >
+                    <CardComponent card={card} isFaceUp={true} />
+                </Reorder.Item>
             );
           })}
         </AnimatePresence>
