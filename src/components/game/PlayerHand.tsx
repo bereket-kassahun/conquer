@@ -42,12 +42,12 @@ export default function PlayerHand() {
   };
 
   return (
-    <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex justify-center items-end h-72 w-[200%] pointer-events-auto">
+    <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex justify-center items-end h-96 w-[260%] pointer-events-auto">
       <Reorder.Group
         axis="x"
         values={cards}
         onReorder={handleReorder}
-        className="flex items-end p-4 -space-x-12" // Adjusted for the new size
+        className="flex items-end p-4 -space-x-8"
       >
         {cards.map((card, index) => (
           <PlayerCard

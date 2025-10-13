@@ -13,17 +13,22 @@ interface PlayerCardProps {
   gamePhase: string;
 }
 
-const rotationAngle = 9;
-const maxArcHeight = 80;
+const rotationAngle = 5;
+const maxArcHeight = 50;
 
 export default function PlayerCard({ card, index, numCards, onCardClick, gamePhase }: PlayerCardProps) {
   const controls = useAnimationControls();
 
-  const rotation = (index - (numCards - 1) / 2) * rotationAngle;
   const centerIndex = (numCards - 1) / 2;
-  const distanceFromCenter = Math.abs(index - centerIndex);
+  const distanceFromCenter = index - centerIndex;
   const normalizedDistance = centerIndex > 0 ? distanceFromCenter / centerIndex : 0;
-  const y = Math.cos(normalizedDistance * (Math.PI / 2)) * maxArcHeight;
+
+  // Apply a sine curve to the rotation to make the ends tuck in more
+  const rotation = Math.sin(normalizedDistance * (Math.PI / 2)) * centerIndex * rotationAngle;
+
+  const absDistanceFromCenter = Math.abs(distanceFromCenter);
+  const normalizedAbsDistance = centerIndex > 0 ? absDistanceFromCenter / centerIndex : 0;
+  const y = Math.cos(normalizedAbsDistance * (Math.PI / 2)) * maxArcHeight;
 
   useEffect(() => {
     controls.start({
