@@ -40,7 +40,6 @@ export default function PlayerHand() {
   const radius = 15 * numCards; // The radius of the fan's arc
 
   return (
-    // 1. Adjusted container position to be flush with the bottom
     <div className="absolute bottom-[-60px] sm:bottom-[-80px] left-1/2 -translate-x-1/2 w-[600px] h-[300px] sm:w-[800px] sm:h-[400px] pointer-events-auto">
         <Reorder.Group
             axis="x"
@@ -60,6 +59,7 @@ export default function PlayerHand() {
                     key={card.id}
                     value={card}
                     id={card.id}
+                    drag="x"
                     onTap={() => onCardClick(card)}
                     className="absolute left-1/2 -translate-x-1/2 bottom-0"
                     style={{
@@ -68,19 +68,19 @@ export default function PlayerHand() {
                     initial={ gamePhase === 'dealing-cards' ? { opacity: 0, y: -200, rotate: 0 } : false }
                     animate={{
                         opacity: 1,
-                        // 2. Uses the smaller radius for a more compact fan
                         transform: `rotate(${cardAngle}deg) translateY(-${radius}px)`,
-                        transition: { type: 'spring', stiffness: 300, damping: 30, delay: gamePhase === 'dealing-cards' ? index * 0.1 : 0 },
+                        transition: { type: 'spring', stiffness: 180, damping: 25, delay: gamePhase === 'dealing-cards' ? index * 0.1 : 0 },
                     }}
                     whileHover={{
-                        // 3. Refined hover effect to match the new radius
                         transform: `rotate(${cardAngle}deg) translateY(-${radius + 40}px) scale(1.1)`,
                         zIndex: 50,
                         transition: { type: 'spring', stiffness: 300, damping: 20 },
                     }}
-                    dragListener={true}
                 >
-                    <CardComponent card={card} isFaceUp={true} />
+                    <CardComponent 
+                        card={card} 
+                        isFaceUp={true} 
+                    />
                 </Reorder.Item>
             );
           })}

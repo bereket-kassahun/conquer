@@ -55,7 +55,7 @@ const CardComponent = React.forwardRef<HTMLDivElement, CardProps>(
         ref={ref}
         style={style}
         className={cn(
-          'w-16 h-24 md:w-20 md:h-28 bg-white rounded-md shadow-lg border border-gray-300 select-none cursor-grab active:cursor-grabbing',
+          'w-16 h-24 md:w-20 md:h-28 bg-white rounded-md shadow-lg border border-gray-300 select-none cursor-grab active:cursor-grabbing pointer-events-none',
           className
         )}
       >
