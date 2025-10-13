@@ -35,30 +35,30 @@ const CardComponent = React.forwardRef<HTMLDivElement, CardProps>(
     const CardFace = () => (
       <div className="relative w-full h-full">
         {/* Top-left corner */}
-        <div className="absolute top-1 left-1 flex flex-col items-center leading-none">
-          <span className={`font-bold text-xl ${suitColors[card.suit]}`}>{card.rank === 'Joker' ? 'J' : rankDisplay}</span>
-          <span className={`text-lg ${suitColors[card.suit]}`}>{suitSymbols[card.suit]}</span>
+        <div className="absolute top-0.5 left-0.5 flex flex-col items-center leading-none">
+          <span className={`font-bold text-xs ${suitColors[card.suit]}`}>{card.rank === 'Joker' ? 'J' : rankDisplay}</span>
+          <span className={`text-[10px] ${suitColors[card.suit]}`}>{suitSymbols[card.suit]}</span>
         </div>
 
         {/* Center suit */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className={`text-4xl ${suitColors[card.suit]}`}>{suitSymbols[card.suit]}</span>
+          <span className={`text-2xl ${suitColors[card.suit]}`}>{suitSymbols[card.suit]}</span>
         </div>
 
         {/* Bottom-right corner (inverted) */}
         <div
-          className="absolute bottom-1 right-1 flex flex-col items-center leading-none"
+          className="absolute bottom-0.5 right-0.5 flex flex-col items-center leading-none"
           style={{ transform: 'rotate(180deg)' }}
         >
-          <span className={`font-bold text-xl ${suitColors[card.suit]}`}>{card.rank === 'Joker' ? 'J' : rankDisplay}</span>
-          <span className={`text-lg ${suitColors[card.suit]}`}>{suitSymbols[card.suit]}</span>
+          <span className={`font-bold text-xs ${suitColors[card.suit]}`}>{card.rank === 'Joker' ? 'J' : rankDisplay}</span>
+          <span className={`text-[10px] ${suitColors[card.suit]}`}>{suitSymbols[card.suit]}</span>
         </div>
       </div>
     );
 
     const CardBack = () => (
-      <div className="w-full h-full bg-blue-800 border-2 border-blue-400 rounded-md flex items-center justify-center">
-        <div className="w-3/4 h-3/4 border-2 border-dashed border-blue-400 rounded-sm"></div>
+      <div className="w-full h-full bg-blue-800 border border-blue-400 rounded-sm flex items-center justify-center">
+        <div className="w-3/4 h-3/4 border border-dashed border-blue-400 rounded-xs"></div>
       </div>
     );
 
@@ -67,7 +67,7 @@ const CardComponent = React.forwardRef<HTMLDivElement, CardProps>(
         ref={ref}
         style={style}
         className={cn(
-          'w-16 h-24 md:w-20 md:h-28 bg-white rounded-md shadow-lg border border-gray-300 select-none cursor-grab active:cursor-grabbing pointer-events-none',
+          'w-10 h-14 bg-white rounded-md shadow-md border border-gray-300 select-none cursor-grab active:cursor-grabbing pointer-events-none',
           className
         )}
       >

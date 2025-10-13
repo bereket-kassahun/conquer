@@ -11,7 +11,6 @@ export default function PlayerHand() {
   const { player, setPlayerCards, gamePhase, finishDealingAnimation, discardCard, drawnCard, turn } = useGameStore();
   const { toast } = useToast();
 
-  // 1. & 2. A local state is re-introduced and kept in sync with the global state.
   const [cards, setCards] = useState<Card[]>([]);
   useEffect(() => {
     setCards(player?.cards ?? []);
@@ -37,50 +36,65 @@ export default function PlayerHand() {
     }
   };
 
-  // 3. The handler updates the local state first, then the global state.
   const handleReorder = (newOrder: Card[]) => {
     setCards(newOrder);
     setPlayerCards(newOrder);
   };
 
+  const numCards = cards.length;
+  const rotationAngle = 7; // Increased for a wider circle
+  const maxArcHeight = 50; // Height of the arc
+
   return (
-    <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex justify-center items-end h-48 w-full pointer-events-auto">
+    <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex justify-center items-end h-48 w-[110%] pointer-events-auto">
       <Reorder.Group
         axis="x"
-        values={cards} // The component is now bound to the local, synced state
-        onReorder={handleReorder} // The handler performs the two-step update
-        className="flex items-end p-4 space-x-2"
+        values={cards}
+        onReorder={handleReorder}
+        className="flex items-end p-4 -space-x-7" // Reduced negative space
       >
-        {cards.map((card, index) => (
-          <Reorder.Item
-            key={card.id} // The key is critical for React to track the items
-            value={card}
-            id={card.id}
-            drag="x"
-            onTap={() => onCardClick(card)}
-            className="relative cursor-grab active:cursor-grabbing"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              zIndex: index,
-              transition: {
-                type: 'spring',
-                stiffness: 300,
-                damping: 30,
-                delay: gamePhase === 'dealing-cards' ? index * 0.1 : 0,
-              },
-            }}
-            whileHover={{
-              y: -20,
-              scale: 1.05,
-              zIndex: 50,
-              transition: { type: 'spring', stiffness: 300, damping: 20 },
-            }}
-          >
-            <CardComponent card={card} isFaceUp={true} />
-          </Reorder.Item>
-        ))}
+        {cards.map((card, index) => {
+          const rotation = (index - (numCards - 1) / 2) * rotationAngle;
+
+          // Create a convex arc
+          const centerIndex = (numCards - 1) / 2;
+          const distanceFromCenter = Math.abs(index - centerIndex);
+          const normalizedDistance = centerIndex > 0 ? distanceFromCenter / centerIndex : 0;
+          const y = Math.cos(normalizedDistance * (Math.PI / 2)) * maxArcHeight;
+
+          return (
+            <Reorder.Item
+              key={card.id}
+              value={card}
+              id={card.id}
+              drag="x"
+              onTap={() => onCardClick(card)}
+              className="relative cursor-grab active:cursor-grabbing"
+              initial={{ opacity: 0, y: 50 }}
+              animate={{
+                opacity: 1,
+                y: -y, // Apply the arc height as a negative translation
+                rotate: rotation,
+                zIndex: index,
+                transition: {
+                  type: 'spring',
+                  stiffness: 300,
+                  damping: 30,
+                  delay: gamePhase === 'dealing-cards' ? index * 0.1 : 0,
+                },
+              }}
+              whileHover={{
+                y: -y - 20,
+                scale: 1.05,
+                rotate: rotation, // Keep rotation on hover
+                zIndex: 50,
+                transition: { type: 'spring', stiffness: 300, damping: 20 },
+              }}
+            >
+              <CardComponent card={card} isFaceUp={true} />
+            </Reorder.Item>
+          );
+        })}
       </Reorder.Group>
     </div>
   );
