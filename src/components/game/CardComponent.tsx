@@ -30,16 +30,28 @@ const suitColors: Record<Suit, string> = {
 
 const CardComponent = React.forwardRef<HTMLDivElement, CardProps>(
   ({ card, isFaceUp, className, style }, ref) => {
+    const rankDisplay = card.rank === '10' ? '10' : card.rank[0];
+
     const CardFace = () => (
-      <div className="relative w-full h-full p-1 flex flex-col justify-between">
-        <div className="flex flex-col items-start">
-          <span className="font-bold text-lg leading-none">{card.rank === 'Joker' ? 'J' : card.rank[0]}</span>
-          <span className={`text-lg leading-none ${suitColors[card.suit]}`}>{suitSymbols[card.suit]}</span>
+      <div className="relative w-full h-full">
+        {/* Top-left corner */}
+        <div className="absolute top-1 left-1 flex flex-col items-center leading-none">
+          <span className={`font-bold text-xl ${suitColors[card.suit]}`}>{card.rank === 'Joker' ? 'J' : rankDisplay}</span>
+          <span className={`text-lg ${suitColors[card.suit]}`}>{suitSymbols[card.suit]}</span>
         </div>
-        <div className={`self-center text-3xl ${suitColors[card.suit]}`}>{suitSymbols[card.suit]}</div>
-        <div className="flex flex-col items-end rotate-180">
-          <span className="font-bold text-lg leading-none">{card.rank === 'Joker' ? 'J' : card.rank[0]}</span>
-          <span className={`text-lg leading-none ${suitColors[card.suit]}`}>{suitSymbols[card.suit]}</span>
+
+        {/* Center suit */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className={`text-4xl ${suitColors[card.suit]}`}>{suitSymbols[card.suit]}</span>
+        </div>
+
+        {/* Bottom-right corner (inverted) */}
+        <div
+          className="absolute bottom-1 right-1 flex flex-col items-center leading-none"
+          style={{ transform: 'rotate(180deg)' }}
+        >
+          <span className={`font-bold text-xl ${suitColors[card.suit]}`}>{card.rank === 'Joker' ? 'J' : rankDisplay}</span>
+          <span className={`text-lg ${suitColors[card.suit]}`}>{suitSymbols[card.suit]}</span>
         </div>
       </div>
     );
