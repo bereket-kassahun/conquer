@@ -12,7 +12,6 @@ interface GameState {
   deck: Card[];
   discardPile: Card[];
   gamePhase: GamePhase;
-  turn: number; // playerNumber of the current turn
   drawnCard: boolean;
 
   // Actions
@@ -31,7 +30,6 @@ export const useGameStore = create<GameState>((set, get) => ({
   deck: [],
   discardPile: [],
   gamePhase: 'loading',
-  turn: 1, // Dealer (player 1) starts
   drawnCard: false,
 
   initGame: () => {
@@ -41,7 +39,6 @@ export const useGameStore = create<GameState>((set, get) => ({
       deck: mockDeck,
       discardPile: mockDiscardPile,
       gamePhase: 'initial-deal',
-      turn: 1,
       drawnCard: false,
     });
   },
@@ -55,51 +52,56 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   drawFromDeck: () => {
-    const { deck, player, turn, drawnCard } = get();
-    if (player?.playerNumber !== turn || drawnCard) return;
+    set(state => {
+      if (!state.player) return {};
 
-    const newDeck = [...deck];
-    const drawnCardFromDeck = newDeck.pop();
-    if (drawnCardFromDeck && player) {
-      const newPlayerCards = [...player.cards, drawnCardFromDeck];
-      set({
-        deck: newDeck,
-        player: { ...player, cards: newPlayerCards },
-        drawnCard: true,
-      });
-    }
+      const newDeck = [...state.deck];
+      const drawnCardFromDeck = newDeck.pop();
+
+      if (drawnCardFromDeck) {
+        const newPlayerCards = [...state.player.cards, drawnCardFromDeck];
+        return {
+          deck: newDeck,
+          player: { ...state.player, cards: newPlayerCards },
+          drawnCard: true,
+        };
+      }
+      return {};
+    });
   },
 
   drawFromDiscard: () => {
-    const { discardPile, player, turn, drawnCard } = get();
-    if (player?.playerNumber !== turn || drawnCard || discardPile.length === 0) return;
+    set(state => {
+      if (!state.player || state.discardPile.length === 0) return {};
 
-    const newDiscardPile = [...discardPile];
-    const drawnCardFromPile = newDiscardPile.pop();
-    if (drawnCardFromPile && player) {
-      const newPlayerCards = [...player.cards, drawnCardFromPile];
-      set({
-        discardPile: newDiscardPile,
-        player: { ...player, cards: newPlayerCards },
-        drawnCard: true,
-      });
-    }
+      const newDiscardPile = [...state.discardPile];
+      const drawnCardFromPile = newDiscardPile.pop();
+
+      if (drawnCardFromPile) {
+        const newPlayerCards = [...state.player.cards, drawnCardFromPile];
+        return {
+          discardPile: newDiscardPile,
+          player: { ...state.player, cards: newPlayerCards },
+          drawnCard: true,
+        };
+      }
+      return {};
+    });
   },
 
   discardCard: (cardToDiscard: Card) => {
-    const { player, turn, drawnCard } = get();
-    if (player?.playerNumber !== turn || !drawnCard) return;
+    set(state => {
+      if (!state.player) return {};
 
-    const newPlayerCards = player.cards.filter(c => c.id !== cardToDiscard.id);
-    if (newPlayerCards.length === player.cards.length) return; // card not found
+      const newPlayerCards = state.player.cards.filter(c => c.id !== cardToDiscard.id);
+      if (newPlayerCards.length === state.player.cards.length) return {}; // card not found
 
-    set(state => ({
-      discardPile: [...state.discardPile, cardToDiscard],
-      player: { ...player, cards: newPlayerCards },
-      drawnCard: false,
-      turn: (state.turn % 3) + 1, // Cycle through 1, 2, 3
-      otherPlayers: state.otherPlayers.map(p => ({...p, isCurrentTurn: (p.playerNumber === ((state.turn % 3) + 1)) })),
-    }));
+      return {
+        discardPile: [...state.discardPile, cardToDiscard],
+        player: { ...state.player, cards: newPlayerCards },
+        drawnCard: false,
+      };
+    });
   },
   
   setPlayerCards: (cards: Card[]) => {

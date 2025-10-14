@@ -30,8 +30,8 @@ const PileCard = ({card, index}: {card: any, index: number}) => {
 }
 
 export default function DiscardPile() {
-  const { discardPile, drawFromDiscard, player, turn, drawnCard } = useGameStore();
-  const canDraw = player?.playerNumber === turn && !drawnCard && discardPile.length > 0;
+  const { discardPile, drawFromDiscard, player, drawnCard } = useGameStore();
+  const canDraw = true;
   
   return (
     <div className="relative w-20 h-28 md:w-24 md:h-32" onClick={canDraw ? drawFromDiscard : undefined}>

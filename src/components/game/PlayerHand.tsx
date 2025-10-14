@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import PlayerCard from './PlayerCard';
 
 export default function PlayerHand() {
-  const { player, setPlayerCards, gamePhase, finishDealingAnimation, discardCard, drawnCard, turn } = useGameStore();
+  const { player, setPlayerCards, gamePhase, finishDealingAnimation, discardCard, drawnCard } = useGameStore();
   const { toast } = useToast();
 
   const [cards, setCards] = useState<Card[]>([]);
@@ -25,15 +25,7 @@ export default function PlayerHand() {
   }, [gamePhase, finishDealingAnimation, player]);
 
   const onCardClick = (card: Card) => {
-    if (drawnCard && player?.playerNumber === turn) {
-      discardCard(card);
-    } else if (player?.playerNumber === turn && !drawnCard) {
-      toast({
-        title: "Draw a card first!",
-        description: "You must draw a card from the deck or discard pile before discarding.",
-        variant: "destructive",
-      });
-    }
+    discardCard(card);
   };
 
   const handleReorder = (newOrder: Card[]) => {
@@ -42,7 +34,7 @@ export default function PlayerHand() {
   };
 
   return (
-    <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex justify-center items-end h-96 w-[260%] pointer-events-auto">
+    <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex justify-center items-end h-80 w-[260%] pointer-events-auto">
       <Reorder.Group
         axis="x"
         values={cards}

@@ -3,9 +3,9 @@ import { useGameStore } from '@/hooks/use-game-store';
 import { motion } from 'framer-motion';
 
 export default function Deck() {
-  const { deck, drawFromDeck, player, turn, drawnCard } = useGameStore();
+  const { deck, drawFromDeck, player, drawnCard } = useGameStore();
 
-  const canDraw = player?.playerNumber === turn && !drawnCard;
+  const canDraw = true;
 
   return (
     <div className="relative w-20 h-28 md:w-24 md:h-32" onClick={canDraw ? drawFromDeck : undefined}>
