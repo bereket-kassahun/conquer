@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 const useRandomRotation = () => {
     const [rotation, setRotation] = useState(0);
     useEffect(() => {
-        setRotation(Math.random() * 50 - 10);
+        setRotation(Math.random() * 50 - 25);
     }, []);
     return rotation;
 }

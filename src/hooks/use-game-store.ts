@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { create } from 'zustand';
 import type { Player, Card, OtherPlayer } from '@/lib/types';
@@ -12,6 +12,8 @@ interface GameState {
   deck: Card[];
   discardPile: Card[];
   gamePhase: GamePhase;
+  drawnCard: boolean;
+  turn: boolean;
 
   // Actions
   initGame: () => void;
@@ -28,6 +30,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   deck: [],
   discardPile: [],
   gamePhase: 'loading',
+  drawnCard: false,
+  turn: true,
 
   initGame: () => {
     set({
@@ -36,6 +40,8 @@ export const useGameStore = create<GameState>((set, get) => ({
       deck: mockDeck,
       discardPile: mockDiscardPile,
       gamePhase: 'dealing-cards',
+      drawnCard: false,
+      turn: true,
     });
   },
 
@@ -45,7 +51,7 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   drawFromDeck: () => {
     set(state => {
-      if (!state.player) return {};
+      if (!state.player || state.drawnCard || !state.turn) return {};
 
       const newDeck = [...state.deck];
       const drawnCardFromDeck = newDeck.pop();
@@ -55,6 +61,7 @@ export const useGameStore = create<GameState>((set, get) => ({
         return {
           deck: newDeck,
           player: { ...state.player, cards: newPlayerCards },
+          drawnCard: true,
         };
       }
       return {};
@@ -63,7 +70,7 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   drawFromDiscard: () => {
     set(state => {
-      if (!state.player || state.discardPile.length === 0) return {};
+      if (!state.player || state.drawnCard || state.discardPile.length === 0 || !state.turn) return {};
 
       const newDiscardPile = [...state.discardPile];
       const drawnCardFromPile = newDiscardPile.pop();
@@ -73,6 +80,7 @@ export const useGameStore = create<GameState>((set, get) => ({
         return {
           discardPile: newDiscardPile,
           player: { ...state.player, cards: newPlayerCards },
+          drawnCard: true,
         };
       }
       return {};
@@ -81,7 +89,7 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   discardCard: (cardToDiscard: Card) => {
     set(state => {
-      if (!state.player) return {};
+      if (!state.player || !state.drawnCard || !state.turn) return {};
 
       const newPlayerCards = state.player.cards.filter(c => c.id !== cardToDiscard.id);
       if (newPlayerCards.length === state.player.cards.length) return {}; // card not found
@@ -89,6 +97,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       return {
         discardPile: [...state.discardPile, cardToDiscard],
         player: { ...state.player, cards: newPlayerCards },
+        drawnCard: false,
       };
     });
   },
