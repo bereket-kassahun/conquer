@@ -12,7 +12,6 @@ interface GameState {
   deck: Card[];
   discardPile: Card[];
   gamePhase: GamePhase;
-  drawnCard: boolean;
 
   // Actions
   initGame: () => void;
@@ -29,7 +28,6 @@ export const useGameStore = create<GameState>((set, get) => ({
   deck: [],
   discardPile: [],
   gamePhase: 'loading',
-  drawnCard: false,
 
   initGame: () => {
     set({
@@ -38,7 +36,6 @@ export const useGameStore = create<GameState>((set, get) => ({
       deck: mockDeck,
       discardPile: mockDiscardPile,
       gamePhase: 'dealing-cards',
-      drawnCard: false,
     });
   },
 
@@ -58,7 +55,6 @@ export const useGameStore = create<GameState>((set, get) => ({
         return {
           deck: newDeck,
           player: { ...state.player, cards: newPlayerCards },
-          drawnCard: true,
         };
       }
       return {};
@@ -77,7 +73,6 @@ export const useGameStore = create<GameState>((set, get) => ({
         return {
           discardPile: newDiscardPile,
           player: { ...state.player, cards: newPlayerCards },
-          drawnCard: true,
         };
       }
       return {};
@@ -94,7 +89,6 @@ export const useGameStore = create<GameState>((set, get) => ({
       return {
         discardPile: [...state.discardPile, cardToDiscard],
         player: { ...state.player, cards: newPlayerCards },
-        drawnCard: false,
       };
     });
   },
