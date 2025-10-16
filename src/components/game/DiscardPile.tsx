@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 const useRandomRotation = () => {
     const [rotation, setRotation] = useState(0);
     useEffect(() => {
-        setRotation(Math.random() * 20 - 10);
+        setRotation(Math.random() * 50 - 10);
     }, []);
     return rotation;
 }
@@ -36,15 +36,11 @@ export default function DiscardPile() {
   return (
     <div className="relative w-20 h-28 md:w-24 md:h-32" onClick={canDraw ? drawFromDiscard : undefined}>
       <p className="text-center text-sm font-bold text-primary-foreground/70 mb-2">Discard</p>
-      {discardPile.length === 0 ? (
-        <div className="w-full h-full border-2 border-dashed border-white/20 rounded-lg"></div>
-      ) : (
         <div className="w-full h-full">
           {discardPile.map((card, index) => (
             <PileCard card={card} index={index} key={card.id}/>
           ))}
         </div>
-      )}
     </div>
   );
 }
