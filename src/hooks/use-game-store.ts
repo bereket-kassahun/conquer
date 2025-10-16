@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
 import { create } from 'zustand';
 import type { Player, Card, OtherPlayer } from '@/lib/types';
 import { mockPlayer, mockOtherPlayers, mockDeck, mockDiscardPile } from '@/lib/mock-data';
 
-type GamePhase = 'loading' | 'initial-deal' | 'show-initial-card' | 'dealing-cards' | 'playing' | 'waiting';
+type GamePhase = 'loading' | 'dealing-cards' | 'playing' | 'waiting';
 
 interface GameState {
   player: Player | null;
@@ -16,7 +16,6 @@ interface GameState {
 
   // Actions
   initGame: () => void;
-  finishInitialCardAnimation: () => void;
   finishDealingAnimation: () => void;
   drawFromDeck: () => void;
   drawFromDiscard: () => void;
@@ -38,13 +37,9 @@ export const useGameStore = create<GameState>((set, get) => ({
       otherPlayers: mockOtherPlayers,
       deck: mockDeck,
       discardPile: mockDiscardPile,
-      gamePhase: 'initial-deal',
+      gamePhase: 'dealing-cards',
       drawnCard: false,
     });
-  },
-  
-  finishInitialCardAnimation: () => {
-    set({ gamePhase: 'dealing-cards' });
   },
 
   finishDealingAnimation: () => {

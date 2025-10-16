@@ -38,19 +38,6 @@ export default function GamePage() {
   return (
     <div className="relative h-screen w-screen overflow-hidden bg-background">
       <GameTable />
-      <AnimatePresence>
-        {gamePhase === 'initial-deal' && player?.initialCard && (
-          <motion.div
-            initial={{ opacity: 1, y: 0, scale: 1.5 }}
-            animate={{ opacity: 1, y: '60vh' }}
-            exit={{ opacity: 0, transition: { duration: 0.5 } }}
-            transition={{ type: 'spring', stiffness: 50, duration: 2 }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50"
-          >
-            <CardComponent card={player.initialCard} isFaceUp={true} />
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
