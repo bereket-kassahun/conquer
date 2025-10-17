@@ -26,19 +26,26 @@ export default function Lobby() {
       if (currentPlayer) {
         setPlayer(currentPlayer.playerNumber);
       }
+      console.log('players', players)
     });
 
     socket.on('player1', ({ player, remainingCards }) => {
-      initGame(player, remainingCards);
-      setGamePhase('dealing-cards');
+      if(player && remainingCards){
+        initGame(player, remainingCards);
+        setGamePhase('dealing-cards');
+      }
     });
     socket.on('player2', ({ player, remainingCards }) => {
-      initGame(player, remainingCards);
-      setGamePhase('dealing-cards');
+      if(player && remainingCards){
+        initGame(player, remainingCards);
+        setGamePhase('dealing-cards');
+      }
     });
     socket.on('player3', ({ player, remainingCards }) => {
-      initGame(player, remainingCards);
-      setGamePhase('dealing-cards');
+      if(player && remainingCards){
+        initGame(player, remainingCards);
+        setGamePhase('dealing-cards');
+      }
     });
     
     // socket.on('game-started', () => {
@@ -54,6 +61,9 @@ export default function Lobby() {
       socket.off('player-joined');
       socket.off('game-started');
       socket.off('player-left');
+      socket.off('player1');
+      socket.off('player2');
+      socket.off('player3');
     };
   }, [setRoom, setPlayers, setGamePhase, setPlayer]);
 
@@ -64,6 +74,7 @@ export default function Lobby() {
 
   const joinRoom = () => {
     socket.emit('join-room', joiningRoomCode);
+    setRoom(joiningRoomCode, players);
   };
 
   const startGame = () => {

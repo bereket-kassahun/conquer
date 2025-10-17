@@ -3,6 +3,7 @@
 import { create } from 'zustand';
 import type { Player, Card, OtherPlayer } from '@/lib/types';
 import { mockOtherPlayers } from '@/lib/mock-data';
+import { socket } from '@/lib/socket';
 
 type GamePhase = 'lobby' | 'dealing-cards' | 'playing' | 'waiting';
 
@@ -28,6 +29,9 @@ interface GameState {
   drawFromDiscard: () => void;
   discardCard: (card: Card) => void;
   setPlayerCards: (cards: Card[]) => void;
+  setTurn: (turn: number) => void;
+  setDeck: (cards: Card[]) => void;
+  setDiscardPile: (cards: Card[]) => void;
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -41,6 +45,10 @@ export const useGameStore = create<GameState>((set, get) => ({
   roomCode: null,
   players: [],
 
+
+  setTurn: (turn: number) => {
+    set({ turn });
+  },
 
   setRoom: (roomCode, players) => {
     set({ roomCode, players, gamePhase: 'lobby' });
@@ -131,18 +139,13 @@ export const useGameStore = create<GameState>((set, get) => ({
       const newPlayerCards = state.player.cards.filter(c => c.id !== cardToDiscard.id);
       if (newPlayerCards.length === state.player.cards.length) return {}; // card not found
 
-      const nextTurn =
-        state.turn === 1 && get().otherPlayers.find(p => p.playerNumber === 2)
-          ? 2
-          : state.turn === 2 && get().otherPlayers.find(p => p.playerNumber === 3)
-          ? 3
-          : 1;
 
+      socket.emit(`player`+ state.player.playerNumber, {deck: state.deck, discardPile: [...state.discardPile, cardToDiscard], roomCode: state.roomCode});
+      console.log('emmiting', `player`+ state.player.playerNumber, {deck: state.deck, discardPile: [...state.discardPile, cardToDiscard], roomCode: state.roomCode})
       return {
         discardPile: [...state.discardPile, cardToDiscard],
         player: { ...state.player, cards: newPlayerCards },
         drawnCard: false,
-        turn: nextTurn,
       };
     });
   },

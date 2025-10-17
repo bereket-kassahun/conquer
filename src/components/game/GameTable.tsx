@@ -5,22 +5,38 @@ import OtherPlayerComponent from './OtherPlayer';
 import PlayerHand from './PlayerHand';
 import Deck from './Deck';
 import DiscardPile from './DiscardPile';
+import { useEffect } from 'react';
+import { socket } from '@/lib/socket';
 
 export default function GameTable() {
-  const { otherPlayers, deck, player } = useGameStore();
+  const { otherPlayers, deck, player, setDeck, setDiscardPile, setTurn, turn } = useGameStore();
   const player2 = otherPlayers.find(p => p.playerNumber === 2);
   const player3 = otherPlayers.find(p => p.playerNumber === 3);
 
-  
-  console.log('deck:', deck);
-  console.log('player:', player);
+  useEffect(() => {
+    socket.on('sync', ({ deck, discardPile, turn }) => {
+      setDeck(deck);
+      setDiscardPile(discardPile);
+      setTurn(turn);
+    });
+    return () => {
+      socket.off('sync');
+    };
+  }, [deck]);
+
+  console.log('deck:', deck, deck.length);
+  console.log('player:', player, deck.length);
   return (
     <main className="relative h-full w-full">
       {/* The green felt table */}
       <div className="absolute inset-0 bg-primary rounded-md m-0 md:m-4 md:border-8 border-yellow-900/50 shadow-2xl">
         <div className="absolute inset-0 bg-gradient-to-br from-primary via-background to-primary opacity-40"></div>
       </div>
-
+      {player?.playerNumber === turn && (
+        <div className="absolute top-4 sm:top-1/2 sm:-translate-y-1/2 right-4 z-20">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary via-background to-primary">Your Turn!</div>
+        </div>
+      )}
       {player2 && (
         <div className="absolute top-4 sm:top-1/2 sm:-translate-y-1/2 left-4 z-20">
           <OtherPlayerComponent player={player2} position="left" />
