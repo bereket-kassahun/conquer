@@ -9,6 +9,7 @@ export interface Card {
 }
 
 export interface Player {
+  id: string;
   walletAmount: number;
   phoneNumber: string;
   fullName: string;

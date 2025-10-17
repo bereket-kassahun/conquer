@@ -5,13 +5,15 @@ import OtherPlayerComponent from './OtherPlayer';
 import PlayerHand from './PlayerHand';
 import Deck from './Deck';
 import DiscardPile from './DiscardPile';
-import { motion } from 'framer-motion';
 
 export default function GameTable() {
-  const { otherPlayers, player } = useGameStore();
+  const { otherPlayers, deck, player } = useGameStore();
   const player2 = otherPlayers.find(p => p.playerNumber === 2);
   const player3 = otherPlayers.find(p => p.playerNumber === 3);
 
+  
+  console.log('deck:', deck);
+  console.log('player:', player);
   return (
     <main className="relative h-full w-full">
       {/* The green felt table */}
