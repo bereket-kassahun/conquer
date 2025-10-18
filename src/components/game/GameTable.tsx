@@ -33,24 +33,28 @@ export default function GameTable() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary via-background to-primary opacity-40"></div>
       </div>
       {player?.playerNumber === turn && (
-        <div className="absolute top-4 sm:top-1/2 sm:-translate-y-1/2 right-4 z-20">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary via-background to-primary">Your Turn!</div>
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30">
+          <div className="rounded-full bg-accent px-6 py-2 text-lg font-bold text-accent-foreground shadow-lg animate-pulse">
+            Your Turn!
+          </div>
         </div>
       )}
-      {player2 && (
+      {/* {player2 && (
         <div className="absolute top-4 sm:top-1/2 sm:-translate-y-1/2 left-4 z-20">
           <OtherPlayerComponent player={player2} position="left" />
         </div>
-      )}
+      )} */}
 
-      {player3 && (
+      {/* {player3 && (
         <div className="absolute top-4 sm:top-1/2 sm:-translate-y-1/2 right-4 z-20">
           <OtherPlayerComponent player={player3} position="right" />
         </div>
-      )}
+      )} */}
 
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-8 md:gap-16 z-10">
         <Deck />
+        <br/>
+        <br/>
         <DiscardPile />
       </div>
 

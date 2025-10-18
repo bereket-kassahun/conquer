@@ -17,6 +17,7 @@ interface GameState {
   turn: number;
   roomCode: string | null;
   players: { id: string; playerNumber: number }[];
+  joker: Card | null,
 
   // Actions
   setRoom: (roomCode: string, players: { id: string; playerNumber: number }[]) => void;
@@ -32,6 +33,7 @@ interface GameState {
   setTurn: (turn: number) => void;
   setDeck: (cards: Card[]) => void;
   setDiscardPile: (cards: Card[]) => void;
+  setJoker: (joker: Card) => void;
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -44,7 +46,12 @@ export const useGameStore = create<GameState>((set, get) => ({
   turn: 1,
   roomCode: null,
   players: [],
+  joker: null,
 
+
+  setJoker: (joker: Card) => {
+    set({ joker })
+  },
 
   setTurn: (turn: number) => {
     set({ turn });

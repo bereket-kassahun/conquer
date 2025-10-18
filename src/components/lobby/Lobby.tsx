@@ -8,11 +8,11 @@ import { useState, useEffect } from 'react';
 import { Player } from '@/lib/types';
 
 export default function Lobby() {
-  const { roomCode, players, setRoom, setPlayers, setGamePhase, setPlayer, initGame, player, deck } = useGameStore();
+  const { roomCode, players, setRoom, setPlayers, setGamePhase, setPlayer, initGame, player, deck, setJoker } = useGameStore();
   const [joiningRoomCode, setJoiningRoomCode] = useState('');
 
   useEffect(() => {
-    socket.on('room-created', ({ roomCode, players }) => {
+    socket.on('room-created', ({ roomCode, players, }) => {
       setRoom(roomCode, players);
       const currentPlayer = players.find((p: Player) => p.id === socket.id);
       if (currentPlayer) {
@@ -29,21 +29,24 @@ export default function Lobby() {
       console.log('players', players)
     });
 
-    socket.on('player1', ({ player, remainingCards }) => {
+    socket.on('player1', ({ player, remainingCards, joker }) => {
       if(player && remainingCards){
         initGame(player, remainingCards);
+        setJoker(joker);
         setGamePhase('dealing-cards');
       }
     });
-    socket.on('player2', ({ player, remainingCards }) => {
+    socket.on('player2', ({ player, remainingCards, joker }) => {
       if(player && remainingCards){
         initGame(player, remainingCards);
+        setJoker(joker);
         setGamePhase('dealing-cards');
       }
     });
-    socket.on('player3', ({ player, remainingCards }) => {
+    socket.on('player3', ({ player, remainingCards, joker }) => {
       if(player && remainingCards){
         initGame(player, remainingCards);
+        setJoker(joker);
         setGamePhase('dealing-cards');
       }
     });
